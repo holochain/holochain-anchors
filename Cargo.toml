@@ -3,6 +3,11 @@ name = "holochain_anchors"
 version = "0.1.0"
 authors = ["tomgowan"]
 edition = "2018"
+description = "A crate to help Holochain apps use the anchor pattern"
+repository = "https://github.com/holochain/holochain_anchors"
+documentation = "docs.rs/holochain_anchors"
+license = "MIT"
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

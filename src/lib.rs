@@ -65,7 +65,8 @@ fn root_anchor() -> ZomeApiResult<Address> {
 
 }
 
-// Add an anchor with a type
+/// Add an anchor with a type.
+/// If the anchor already exists then it will use the existing anchor.
 pub fn create_anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<Address> {
     // Create the anchor entry
     let anchor_entry = Entry::App(
@@ -80,6 +81,7 @@ pub fn create_anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<
     Ok(anchor_address)
 }
 
+/// Gives a list of all anchors.
 pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
     let root_anchor_entry_address = root_anchor()?;
     Ok(hdk::get_links(&root_anchor_entry_address, LinkMatch::Exactly(ROOT_ANCHOR_LINK_TO), LinkMatch::Any)?.addresses().to_owned())

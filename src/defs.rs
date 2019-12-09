@@ -16,7 +16,8 @@ use crate::{
     RootAnchor,
 };
 
-
+/// This defines the root anchor that is used to list all anchors.
+/// It must be called from your zome.
 pub fn root_anchor_definition() -> ValidatingEntryType {
     entry!(
         name: ROOT_ANCHOR_TYPE,
@@ -45,6 +46,8 @@ pub fn root_anchor_definition() -> ValidatingEntryType {
     )
 }
 
+/// This defines the anchor type that is used to create arbitrary anchors.
+/// It must be called from your zome.
 pub fn anchor_definition() -> ValidatingEntryType {
     entry!(
         name: ANCHOR_TYPE,
