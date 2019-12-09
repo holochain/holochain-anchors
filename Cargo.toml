@@ -1,6 +1,6 @@
 [package]
 name = "holochain_anchors"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["tomgowan"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
@@ -11,7 +11,7 @@ license-file = "LICENSE"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hdk = "0.0.39-alpha4"
+hdk = "0.0.40-alpha1"
 serde_derive = "1.0.89"
 serde_json = { version = "=1.0.39", features = ["preserve_order"] }
 holochain_json_derive = "=0.0.15"
