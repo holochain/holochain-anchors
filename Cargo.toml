@@ -1,6 +1,6 @@
 [package]
 name = "holochain_anchors"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["tomgowan"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
@@ -16,4 +16,3 @@ serde_derive = "1.0.89"
 serde_json = { version = "=1.0.39", features = ["preserve_order"] }
 holochain_json_derive = "=0.0.15"
 serde = "=1.0.89"
-lazy_static = "1.2"

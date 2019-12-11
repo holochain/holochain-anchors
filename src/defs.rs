@@ -1,50 +1,7 @@
-use hdk::{
-    entry_definition::ValidatingEntryType,
-    entry,
-    to,
-    link,
-};
-use hdk::holochain_core_types::{
-    dna::entry_types::Sharing,
-};
+use hdk::holochain_core_types::dna::entry_types::Sharing;
+use hdk::{entry, entry_definition::ValidatingEntryType, from, link};
 
-use crate::{
-    ROOT_ANCHOR_TYPE,
-    ROOT_ANCHOR_LINK_TO,
-    ANCHOR_TYPE,
-    Anchor,
-    RootAnchor,
-};
-
-/// This defines the root anchor that is used to list all anchors.
-/// It must be called from your zome.
-pub fn root_anchor_definition() -> ValidatingEntryType {
-    entry!(
-        name: ROOT_ANCHOR_TYPE,
-        description: "All other anchors are linked from the root anchor so we can list all the anchors.",
-        sharing: Sharing::Public,
-        validation_package: || {
-            hdk::ValidationPackageDefinition::Entry
-        },
-        validation: | _validation_data: hdk::EntryValidationData<RootAnchor>| {
-            Ok(())
-        },
-        links: [
-            to!(
-                ANCHOR_TYPE,
-                link_type: ROOT_ANCHOR_LINK_TO,
-
-                validation_package: || {
-                    hdk::ValidationPackageDefinition::Entry
-                },
-
-                validation: |_validation_data: hdk::LinkValidationData| {
-                    Ok(())
-                }
-            )
-        ]
-    )
-}
+use crate::{Anchor, ANCHOR_LINK_TYPE, ANCHOR_TYPE};
 
 /// This defines the anchor type that is used to create arbitrary anchors.
 /// It must be called from your zome.
@@ -58,6 +15,19 @@ pub fn anchor_definition() -> ValidatingEntryType {
         },
         validation: | _validation_data: hdk::EntryValidationData<Anchor>| {
             Ok(())
-        }
+        },
+        links: [
+            from!(
+                ANCHOR_TYPE,
+                link_type: ANCHOR_LINK_TYPE,
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::Entry
+                },
+
+                validation: |_validation_data: hdk::LinkValidationData| {
+                    Ok(())
+                }
+            )
+        ]
     )
 }
