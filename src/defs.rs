@@ -1,6 +1,8 @@
 use hdk::{
     entry_definition::ValidatingEntryType,
     entry,
+    from,
+    link,
 };
 use hdk::holochain_core_types::{
     dna::entry_types::Sharing,
@@ -8,6 +10,7 @@ use hdk::holochain_core_types::{
 
 use crate::{
     ANCHOR_TYPE,
+    ANCHOR_LINK_TYPE,
     Anchor,
 };
 
@@ -23,6 +26,19 @@ pub fn anchor_definition() -> ValidatingEntryType {
         },
         validation: | _validation_data: hdk::EntryValidationData<Anchor>| {
             Ok(())
-        }
+        },
+        links: [
+            from!(
+                ANCHOR_TYPE,
+                link_type: ANCHOR_LINK_TYPE,
+                validation_package: || {
+                    hdk::ValidationPackageDefinition::Entry
+                },
+
+                validation: |_validation_data: hdk::LinkValidationData| {
+                    Ok(())
+                }
+            )
+        ]
     )
 }
