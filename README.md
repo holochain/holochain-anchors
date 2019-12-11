@@ -21,7 +21,7 @@ Link from the `ANCHOR_TYPE`
 links: [
     from!(
         holochain_anchors::ANCHOR_TYPE,
-        link_type: holochain_anchors::ANCHOR_LINK_TYPE,
+        link_type: "my_link_type",
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
@@ -43,10 +43,10 @@ let my_entry = Entry::App(
 );
 let address = hdk::commit_entry(&my_entry)?;
 let anchor_address = holochain_anchors::create_anchor("my_anchor_type".into(), "my_anchor".into())?;
-hdk::link_entries(&anchor_address, &address, holochain_anchors::ANCHOR_LINK_TYPE, "my_anchor")?;
+hdk::link_entries(&anchor_address, &address, "my_link_type", "my_anchor")?;
 ```
 Get all the links on that anchor.
 ```rust
 let anchor_address = holochain_anchors::create_anchor("my_anchor_type".into(), "my_anchor".into())?;
-hdk::utils::get_links_and_load_type(&anchor_address, LinkMatch::Exactly(holochain_anchors::ANCHOR_LINK_TYPE), LinkMatch::Any)
+hdk::utils::get_links_and_load_type(&anchor_address, LinkMatch::Exactly("my_link_type"), LinkMatch::Any)
 ```

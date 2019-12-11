@@ -1,31 +1,26 @@
 use hdk::{
     self,
     error::ZomeApiResult,
-    holochain_core_types::{
-        entry::Entry,
-    },
-    holochain_persistence_api::{
-        cas::content::{Address, AddressableContent},
-    },
+    holochain_core_types::entry::Entry,
+    holochain_persistence_api::cas::content::{Address, AddressableContent},
 };
 
-use serde_derive::{Serialize, Deserialize};
+use serde_derive::{Deserialize, Serialize};
 
 use hdk::prelude::*;
 
 pub mod defs;
 pub use defs::*;
 
-const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor"); 
+const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor");
 pub const ANCHOR_TYPE: &'static str = concat!("holochain_anchors", "::", "Anchor");
-pub const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_link");
+const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_link");
 
 #[derive(Serialize, Deserialize, Debug, DefaultJson, Clone)]
 struct Anchor {
     anchor_type: String,
     anchor_text: Option<String>,
 }
-
 
 /// Add an anchor with a type.
 /// If the anchor already exists then it will use the existing anchor.
@@ -34,14 +29,25 @@ pub fn create_anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<
     let anchor_entry = Anchor::new(anchor_type.clone(), Some(anchor_text.clone())).entry();
     let anchor_address = hdk::commit_entry(&anchor_entry)?;
     let anchor_type_address = check_parent(anchor_type)?;
-    hdk::link_entries(&anchor_type_address, &anchor_address, ANCHOR_LINK_TYPE, &anchor_text)?;
+    hdk::link_entries(
+        &anchor_type_address,
+        &anchor_address,
+        ANCHOR_LINK_TYPE,
+        &anchor_text,
+    )?;
     Ok(anchor_address)
 }
 
 /// Gives a list of all anchors.
 pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
     let root_anchor_entry_address = root_anchor()?;
-    Ok(hdk::get_links(&root_anchor_entry_address, LinkMatch::Exactly(ANCHOR_LINK_TYPE), LinkMatch::Any)?.addresses().to_owned())
+    Ok(hdk::get_links(
+        &root_anchor_entry_address,
+        LinkMatch::Exactly(ANCHOR_LINK_TYPE),
+        LinkMatch::Any,
+    )?
+    .addresses()
+    .to_owned())
 }
 
 fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
@@ -56,7 +62,12 @@ fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
 
 fn check_root(anchor_type_address: Address, anchor_type: String) -> ZomeApiResult<()> {
     let root_anchor_address = root_anchor()?;
-    hdk::link_entries(&root_anchor_address, &anchor_type_address, ANCHOR_LINK_TYPE, &anchor_type)?;
+    hdk::link_entries(
+        &root_anchor_address,
+        &anchor_type_address,
+        ANCHOR_LINK_TYPE,
+        &anchor_type,
+    )?;
     Ok(())
 }
 
@@ -77,10 +88,7 @@ impl Anchor {
         }
     }
     fn entry(self) -> Entry {
-        Entry::App(
-            ANCHOR_TYPE.into(),
-            self.into()
-        )
+        Entry::App(ANCHOR_TYPE.into(), self.into())
     }
 }
 
