@@ -1,74 +1,113 @@
 use hdk::{
     self,
     error::ZomeApiResult,
-    holochain_core_types::{
-        entry::Entry,
-    },
-    holochain_persistence_api::{
-        cas::content::{Address, AddressableContent},
-    },
+    holochain_core_types::entry::Entry,
+    holochain_persistence_api::cas::content::{Address, AddressableContent},
 };
 
-use serde_derive::{Serialize, Deserialize};
+use serde_derive::{Deserialize, Serialize};
 
 use hdk::prelude::*;
 
 pub mod defs;
 pub use defs::*;
 
-const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor"); 
-const ROOT_ANCHOR_TYPE: &'static str = concat!("holochain_anchors", "::", "RootAnchor"); 
-pub const ANCHOR_TYPE: &'static str = "Anchor";
-const ROOT_ANCHOR_LINK_TO: &'static str = "anchors";
+const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor");
+pub const ANCHOR_TYPE: &'static str = concat!("holochain_anchors", "::", "Anchor");
+const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_link");
 
 #[derive(Serialize, Deserialize, Debug, DefaultJson, Clone)]
 struct Anchor {
     anchor_type: String,
-    anchor_text: String,
+    anchor_text: Option<String>,
 }
 
-type RootAnchor = String;
-
-// Will only create a new root anchor if the Agent is not synched or its first hardTimeout
-// will accumulate headers for each agent that adds.
-// Ideally it would be cool to be able to linkn to the root_anchor_entry.address() and it not be an entry.
-fn root_anchor() -> ZomeApiResult<Address> {
-    // Creating the root anchor
-    let root_anchor_entry = Entry::App(
-        ROOT_ANCHOR_TYPE.into(),
-        ROOT_ANCHOR.into(),
-    );
-    // Only commit the entry if it doesn't exist from this agents perspective.
-    let root_anchor_entry_address = root_anchor_entry.address();
-    if hdk::get_entry(&root_anchor_entry_address)?.is_none() {
-        Ok(hdk::commit_entry(&root_anchor_entry)?)
-    } else {
-        Ok(root_anchor_entry_address)
-    }
-}
-
-// Add an anchor with a type
+/// Add an anchor with a type.
+/// If the anchor already exists then it will use the existing anchor.
 pub fn create_anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<Address> {
     // Create the anchor entry
-    let anchor_entry = Entry::App(
-        ANCHOR_TYPE.into(),
-        Anchor {
-            anchor_type,
-            anchor_text
-        }.into()
-    );
+    let anchor_entry = Anchor::new(anchor_type.clone(), Some(anchor_text.clone())).entry();
     let anchor_address = hdk::commit_entry(&anchor_entry)?;
-    // TODO put root_anchor address into lazy static
-    hdk::link_entries(&root_anchor()?, &anchor_address, ROOT_ANCHOR_LINK_TO, "")?;
+    let anchor_type_address = check_parent(anchor_type)?;
+    hdk::link_entries(
+        &anchor_type_address,
+        &anchor_address,
+        ANCHOR_LINK_TYPE,
+        &anchor_text,
+    )?;
     Ok(anchor_address)
 }
 
-pub fn get_anchor(anchor_address: Address) -> ZomeApiResult<Option<Entry>> {
-    hdk::get_entry(&anchor_address)
+/// Gives a list of all anchors.
+pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
+    let root_anchor_entry_address = root_anchor()?;
+    Ok(hdk::get_links(
+        &root_anchor_entry_address,
+        LinkMatch::Exactly(ANCHOR_LINK_TYPE),
+        LinkMatch::Any,
+    )?
+    .addresses()
+    .to_owned())
 }
 
-pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
-    // TODO lazy static
-    let root_anchor_entry_address = root_anchor()?;
-    Ok(hdk::get_links(&root_anchor_entry_address, LinkMatch::Exactly(ROOT_ANCHOR_LINK_TO), LinkMatch::Any)?.addresses().to_owned())
+fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
+    let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
+    let anchor_type_address = anchor_type_entry.address();
+    if let Ok(None) = hdk::get_entry(&anchor_type_address) {
+        hdk::commit_entry(&anchor_type_entry)?;
+    }
+    check_root(anchor_type_address.clone(), anchor_type)?;
+    Ok(anchor_type_address)
 }
+
+fn check_root(anchor_type_address: Address, anchor_type: String) -> ZomeApiResult<()> {
+    let root_anchor_address = root_anchor()?;
+    hdk::link_entries(
+        &root_anchor_address,
+        &anchor_type_address,
+        ANCHOR_LINK_TYPE,
+        &anchor_type,
+    )?;
+    Ok(())
+}
+
+fn root_anchor() -> ZomeApiResult<Address> {
+    let root_anchor_entry = Anchor::new(ROOT_ANCHOR.into(), None).entry();
+    let root_anchor_address = root_anchor_entry.address();
+    if let Ok(None) = hdk::get_entry(&root_anchor_address) {
+        hdk::commit_entry(&root_anchor_entry)?;
+    }
+    Ok(root_anchor_address)
+}
+
+impl Anchor {
+    fn new(anchor_type: String, anchor_text: Option<String>) -> Self {
+        Anchor {
+            anchor_type,
+            anchor_text,
+        }
+    }
+    fn entry(self) -> Entry {
+        Entry::App(ANCHOR_TYPE.into(), self.into())
+    }
+}
+
+/*
+philtr -> tweets
+
+let anchor = Anchor {
+    "%root",
+    ""
+};
+let anchor = Anchor {
+    "handle",
+    ""
+};
+hdk::get_links(&anchor_address, LinkMatch::Exactly("anchor"), LinkMatch::Any);
+let anchor = Anchor {
+    "handle",
+    "philtr"
+};
+let philtr_address = anchor.address();
+hdk::get_links(&philtr_address, LinkMatch::Exactly("favourites"), LinkMatch::Exactly("motorbikes"))
+*/
