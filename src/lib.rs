@@ -24,17 +24,20 @@ struct Anchor {
 
 /// Add an anchor with a type.
 /// If the anchor already exists then it will use the existing anchor.
-pub fn create_anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<Address> {
-    // Create the anchor entry
+/// If not it will commit it and check to see if it'd Anchor Type and Root anchor need to be committed too.
+pub fn anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<Address> {
     let anchor_entry = Anchor::new(anchor_type.clone(), Some(anchor_text.clone())).entry();
-    let anchor_address = hdk::commit_entry(&anchor_entry)?;
-    let anchor_type_address = check_parent(anchor_type)?;
-    hdk::link_entries(
-        &anchor_type_address,
-        &anchor_address,
-        ANCHOR_LINK_TYPE,
-        &anchor_text,
-    )?;
+    let anchor_address = anchor_entry.address();
+    if let Ok(None) = hdk::get_entry(&anchor_entry.address()) {
+        hdk::commit_entry(&anchor_entry)?;
+        let anchor_type_address = check_parent(anchor_type)?;
+        hdk::link_entries(
+            &anchor_type_address,
+            &anchor_address,
+            ANCHOR_LINK_TYPE,
+            &anchor_text,
+        )?;
+    }
     Ok(anchor_address)
 }
 

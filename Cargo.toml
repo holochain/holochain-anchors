@@ -1,7 +1,7 @@
 [package]
 name = "holochain_anchors"
-version = "0.2.0"
-authors = ["tomgowan"]
+version = "0.2.1"
+authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
 repository = "https://github.com/holochain/holochain_anchors"
