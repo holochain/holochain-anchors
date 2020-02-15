@@ -12,12 +12,12 @@ use hdk::prelude::*;
 pub mod defs;
 pub use defs::*;
 
-const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor");
+pub const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor");
 pub const ANCHOR_TYPE: &'static str = concat!("holochain_anchors", "::", "Anchor");
-const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_link");
+pub const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_link");
 
 #[derive(Serialize, Deserialize, Debug, DefaultJson, Clone)]
-struct Anchor {
+pub struct Anchor {
     anchor_type: String,
     anchor_text: Option<String>,
 }
@@ -81,13 +81,13 @@ fn root_anchor() -> ZomeApiResult<Address> {
 }
 
 impl Anchor {
-    fn new(anchor_type: String, anchor_text: Option<String>) -> Self {
+    pub fn new(anchor_type: String, anchor_text: Option<String>) -> Self {
         Anchor {
             anchor_type,
             anchor_text,
         }
     }
-    fn entry(self) -> Entry {
+    pub fn entry(self) -> Entry {
         Entry::App(ANCHOR_TYPE.into(), self.into())
     }
 }

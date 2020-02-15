@@ -11,8 +11,8 @@ license-file = "LICENSE"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hdk = "0.0.42-alpha3"
-serde_derive = "1.0.89"
-serde_json = { version = "=1.0.39", features = ["preserve_order"] }
-holochain_json_derive = "=0.0.15"
-serde = "=1.0.89"
+hdk = { git = "https://github.com/holochain/holochain-rust" }
+serde_derive = "^1.0"
+serde_json = { version = "^1.0", features = ["preserve_order"] }
+holochain_json_derive = "^0.0"
+serde = "^1.0"
