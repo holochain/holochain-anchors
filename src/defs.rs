@@ -1,5 +1,5 @@
 use hdk::holochain_core_types::dna::entry_types::Sharing;
-use hdk::{entry, entry_definition::ValidatingEntryType, from, link};
+use hdk::{entry, entry_definition::ValidatingEntryType, to, from, link};
 
 use crate::{Anchor, ANCHOR_LINK_TYPE, ANCHOR_TYPE};
 
