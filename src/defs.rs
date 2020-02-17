@@ -26,7 +26,8 @@ pub fn anchor_definition() -> ValidatingEntryType {
 
                 validation: |_validation_data: hdk::LinkValidationData| {
                     Ok(())
-                },
+                }
+            ),
             to!(
                 ANCHOR_TYPE,
                 link_type: ANCHOR_ANCHOR_LINK_TYPE,
