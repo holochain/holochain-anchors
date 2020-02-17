@@ -18,7 +18,7 @@ const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "ancho
 pub const ANCHOR_ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_anchor_link");
 
 #[derive(Serialize, Deserialize, Debug, DefaultJson, Clone)]
-struct Anchor {
+pub struct Anchor {
     anchor_type: String,
     anchor_text: Option<String>,
 }
