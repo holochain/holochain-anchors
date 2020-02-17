@@ -13,8 +13,10 @@ pub mod defs;
 pub use defs::*;
 
 const ROOT_ANCHOR: &'static str = concat!("holochain_anchors", "::", "root_anchor");
-pub const ANCHOR_TYPE: &'static str = concat!("holochain_anchors", "::", "Anchor");
+pub const ANCHOR_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor");
 const ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "::", "anchor_link");
+pub const ANCHOR_ANCHOR_TYPE: &'static str = concat!("holochain_anchor", "::", "anchor_anchor");
+pub const ANCHOR_ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchor", "::", "anchor_anchor_link");
 
 #[derive(Serialize, Deserialize, Debug, DefaultJson, Clone)]
 struct Anchor {
