@@ -19,8 +19,8 @@ pub const ANCHOR_ANCHOR_LINK_TYPE: &'static str = concat!("holochain_anchors", "
 
 #[derive(Serialize, Deserialize, Debug, DefaultJson, Clone)]
 pub struct Anchor {
-    anchor_type: String,
-    anchor_text: Option<String>,
+    pub anchor_type: String,
+    pub anchor_text: Option<String>,
 }
 
 /// Add an anchor with a type.
