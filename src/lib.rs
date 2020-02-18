@@ -42,6 +42,10 @@ pub fn anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<Address
     Ok(anchor_address)
 }
 
+pub fn get_anchor(address: Address) -> ZomeApiResult<Anchor> {
+    hdk::utils::get_as_type(address)
+}
+
 /// Gives a list of all anchors.
 pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
     let root_anchor_entry_address = root_anchor()?;
