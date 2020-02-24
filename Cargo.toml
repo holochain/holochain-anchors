@@ -1,17 +1,15 @@
 [package]
 name = "holochain_anchors"
-version = "0.2.1"
-authors = ["tomgowan"]
+version = "0.2.2"
+authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
 repository = "https://github.com/holochain/holochain_anchors"
 documentation = "https://docs.rs/holochain_anchors"
 license-file = "LICENSE"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-hdk = "0.0.42-alpha3"
+hdk = "0.0.42-alpha5"
 serde_derive = "1.0.89"
 serde_json = { version = "=1.0.39", features = ["preserve_order"] }
 holochain_json_derive = "=0.0.15"
