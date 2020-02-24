@@ -1,14 +1,12 @@
 [package]
 name = "holochain_anchors"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
 repository = "https://github.com/holochain/holochain_anchors"
 documentation = "https://docs.rs/holochain_anchors"
 license-file = "LICENSE"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 hdk = "0.0.42-alpha5"
