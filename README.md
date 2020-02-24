@@ -5,7 +5,7 @@ This is still a work in progress and feedback would be appreciated.
 ## Install
 Add the following to your zomes cargo toml.
 ```
-holochain_anchors = "0.2"
+holochain_anchors = "0.2.2"
 ```
 
 ## Usage
@@ -42,11 +42,11 @@ let my_entry = Entry::App(
     }.into()
 );
 let address = hdk::commit_entry(&my_entry)?;
-let anchor_address = holochain_anchors::create_anchor("my_anchor_type".into(), "my_anchor".into())?;
+let anchor_address = holochain_anchors::anchor("my_anchor_type".into(), "my_anchor".into())?;
 hdk::link_entries(&anchor_address, &address, "my_link_type", "my_anchor")?;
 ```
 Get all the links on that anchor.
 ```rust
-let anchor_address = holochain_anchors::create_anchor("my_anchor_type".into(), "my_anchor".into())?;
+let anchor_address = holochain_anchors::anchor("my_anchor_type".into(), "my_anchor".into())?;
 hdk::utils::get_links_and_load_type(&anchor_address, LinkMatch::Exactly("my_link_type"), LinkMatch::Any)
 ```
