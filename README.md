@@ -5,7 +5,7 @@ This is still a work in progress and feedback would be appreciated.
 ## Install
 Add the following to your zomes cargo toml.
 ```
-holochain_anchors = "0.2.2"
+holochain_anchors = "0.2.3"
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ fn anchor_def() -> ValidatingEntryType {
     holochain_anchors::anchor_definition()
 }
 ```
-Link from the `ANCHOR_TYPE`    
+Link from the `ANCHOR_TYPE`
 ```rust
 links: [
     from!(
