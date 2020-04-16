@@ -1,11 +1,11 @@
 [package]
-name = "holochain-anchors"
+name = "holochain_anchors"
 version = "0.2.5"
 authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
-repository = "https://github.com/holochain/holochain-anchors"
-documentation = "https://docs.rs/holochain-anchors"
+repository = "https://github.com/holochain/holochain_anchors"
+documentation = "https://docs.rs/holochain_anchors"
 license-file = "LICENSE"
 
 [dependencies]
