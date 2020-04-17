@@ -1,5 +1,5 @@
 [package]
-name = "holochain-anchors"
+name = "holochain_anchors"
 version = "0.2.5"
 authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
