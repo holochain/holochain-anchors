@@ -4,12 +4,12 @@ version = "0.2.3"
 authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
-repository = "https://github.com/holochain/holochain_anchors"
-documentation = "https://docs.rs/holochain_anchors"
+repository = "https://github.com/holochain/holochain-anchors"
+documentation = "https://docs.rs/holochain-anchors"
 license-file = "LICENSE"
 
 [dependencies]
-hdk = "0.0.45-alpha1"
+hdk = { git = "https://github.com/holochain/holochain-rust" , branch = "develop" }
 serde_derive = "1.0.104"
 serde_json = { version = "=1.0.47", features = ["preserve_order"] }
 holochain_json_derive = "=0.0.23"
