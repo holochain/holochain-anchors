@@ -9,7 +9,7 @@ documentation = "https://docs.rs/holochain-anchors"
 license-file = "LICENSE"
 
 [dependencies]
-hdk = { git = "https://github.com/holochain/holochain-rust" , branch = "develop" }
+hdk = "=0.0.48-alpha1"
 serde_derive = "1.0.104"
 serde_json = { version = "=1.0.47", features = ["preserve_order"] }
 holochain_json_derive = "=0.0.23"
