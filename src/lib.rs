@@ -57,6 +57,22 @@ pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
     .to_owned())
 }
 
+/**
+ * Get all anchors of the specified type
+ */
+pub fn get_anchors_of_type(anchor_type: String) -> ZomeApiResult<Vec<Address>> {
+    let anchor_entry = Anchor::new(anchor_type.clone(), None).entry();
+    let parent_anchor_address = anchor_entry.address();
+
+    let links = hdk::get_links(
+        &parent_anchor_address,
+        LinkMatch::Exactly(ANCHOR_LINK_TYPE),
+        LinkMatch::Any,
+    )?;
+
+    Ok(links.addresses())
+}
+
 fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
     let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
     let anchor_type_address = anchor_type_entry.address();
