@@ -3,6 +3,7 @@ use hdk::{
     error::ZomeApiResult,
     holochain_core_types::entry::Entry,
     holochain_persistence_api::cas::content::{Address, AddressableContent},
+    holochain_wasm_utils::api_serialization::get_links::LinksResult,
 };
 
 use serde_derive::{Deserialize, Serialize};
@@ -60,7 +61,7 @@ pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
 /**
  * Get all anchors of the specified type
  */
-pub fn get_anchors_of_type(anchor_type: String) -> ZomeApiResult<Vec<Address>> {
+pub fn get_anchors_of_type(anchor_type: String) -> ZomeApiResult<Vec<LinksResult>> {
     let anchor_entry = Anchor::new(anchor_type.clone(), None).entry();
     let parent_anchor_address = anchor_entry.address();
 
@@ -70,7 +71,7 @@ pub fn get_anchors_of_type(anchor_type: String) -> ZomeApiResult<Vec<Address>> {
         LinkMatch::Any,
     )?;
 
-    Ok(links.addresses())
+    Ok(links.links())
 }
 
 fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
