@@ -45,16 +45,48 @@ pub fn get_anchor(address: Address) -> ZomeApiResult<Anchor> {
     hdk::utils::get_as_type(address)
 }
 
-/// Gives a list of all anchors.
-pub fn get_anchors() -> ZomeApiResult<Vec<Address>> {
-    let root_anchor_entry_address = root_anchor()?;
+/// Gives a list of all anchor type addresses from root anchor
+pub fn list_anchor_type_addresses() -> ZomeApiResult<Vec<Address>> {
+    let root_anchor_address = root_anchor()?;
     Ok(hdk::get_links(
-        &root_anchor_entry_address,
+        &root_anchor_address,
         LinkMatch::Exactly(ANCHOR_LINK_TYPE),
         LinkMatch::Any,
     )?
     .addresses()
     .to_owned())
+}
+
+/// Gives a list of all anchor type link tags from root anchor (same as the anchor_text value)
+pub fn list_anchor_type_tags() -> ZomeApiResult<Vec<String>> {
+    let root_anchor_address = root_anchor()?;
+    Ok(hdk::get_links(&root_anchor_address, LinkMatch::Exactly(ANCHOR_LINK_TYPE), LinkMatch::Any)?.links()
+    .iter()
+    .map(|link| link.tag.clone())
+    .collect())
+}
+
+/// Gives a list of all anchor addresses from an anchor type
+pub fn list_anchor_addresses(anchor_type: String) -> ZomeApiResult<Vec<Address>> {
+    let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
+    let anchor_type_address = anchor_type_entry.address();
+    Ok(hdk::get_links(
+        &anchor_type_address,
+        LinkMatch::Exactly(ANCHOR_LINK_TYPE),
+        LinkMatch::Any,
+    )?
+    .addresses()
+    .to_owned())
+}
+
+/// Gives a list of all anchor link tags from an anchor type (same as the anchor_text value)
+pub fn list_anchor_tags(anchor_type: String) -> ZomeApiResult<Vec<String>> {
+    let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
+    let anchor_type_address = anchor_type_entry.address();
+    Ok(hdk::get_links(&anchor_type_address, LinkMatch::Exactly(ANCHOR_LINK_TYPE), LinkMatch::Any)?.links()
+    .iter()
+    .map(|link| link.tag.clone())
+    .collect())
 }
 
 fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
