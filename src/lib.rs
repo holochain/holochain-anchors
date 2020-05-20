@@ -4,11 +4,9 @@ use hdk::{
     holochain_core_types::entry::Entry,
     holochain_persistence_api::cas::content::{Address, AddressableContent},
 };
-
 use serde_derive::{Deserialize, Serialize};
-
 use hdk::prelude::*;
-
+use hdk::api::AGENT_ADDRESS;
 pub mod defs;
 pub use defs::*;
 
@@ -26,6 +24,7 @@ pub struct Anchor {
 /// If the anchor already exists then it will use the existing anchor.
 /// If not it will commit it and check to see if it'd Anchor Type and Root anchor need to be committed too.
 pub fn anchor(anchor_type: String, anchor_text: String) -> ZomeApiResult<Address> {
+    agent_anchor()?;
     let anchor_entry = Anchor::new(anchor_type.clone(), Some(anchor_text.clone())).entry();
     let anchor_address = anchor_entry.address();
     if let Ok(None) = hdk::get_entry(&anchor_entry.address()) {
@@ -45,7 +44,7 @@ pub fn get_anchor(address: Address) -> ZomeApiResult<Anchor> {
     hdk::utils::get_as_type(address)
 }
 
-/// Gives a list of all anchor type addresses from root anchor
+/// Gives a list of all addresses from root anchor
 pub fn list_anchor_type_addresses() -> ZomeApiResult<Vec<Address>> {
     let root_anchor_address = root_anchor()?;
     Ok(hdk::get_links(
@@ -57,7 +56,7 @@ pub fn list_anchor_type_addresses() -> ZomeApiResult<Vec<Address>> {
     .to_owned())
 }
 
-/// Gives a list of all anchor type link tags from root anchor (same as the anchor_text value)
+/// Gives a list of all link tags from root anchor (same as the anchor_text value)
 pub fn list_anchor_type_tags() -> ZomeApiResult<Vec<String>> {
     let root_anchor_address = root_anchor()?;
     Ok(hdk::get_links(&root_anchor_address, LinkMatch::Exactly(ANCHOR_LINK_TYPE), LinkMatch::Any)?.links()
@@ -66,7 +65,7 @@ pub fn list_anchor_type_tags() -> ZomeApiResult<Vec<String>> {
     .collect())
 }
 
-/// Gives a list of all anchor addresses from an anchor type
+/// Gives a list of all addresses from an anchor type
 pub fn list_anchor_addresses(anchor_type: String) -> ZomeApiResult<Vec<Address>> {
     let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
     let anchor_type_address = anchor_type_entry.address();
@@ -79,7 +78,7 @@ pub fn list_anchor_addresses(anchor_type: String) -> ZomeApiResult<Vec<Address>>
     .to_owned())
 }
 
-/// Gives a list of all anchor link tags from an anchor type (same as the anchor_text value)
+/// Gives a list of all link tags from an anchor type (same as the anchor_text value)
 pub fn list_anchor_tags(anchor_type: String) -> ZomeApiResult<Vec<String>> {
     let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
     let anchor_type_address = anchor_type_entry.address();
@@ -131,22 +130,31 @@ impl Anchor {
     }
 }
 
-/*
-philtr -> tweets
+fn agent_anchor() -> ZomeApiResult<Address> {
+    let anchor_type = "Agents".to_string();
+    let anchor_text = AGENT_ADDRESS.to_string();
+    let anchor_entry = Anchor::new(anchor_type.clone(), Some(anchor_text.clone())).entry();
+    let anchor_address = anchor_entry.address();
+    if let Ok(None) = hdk::get_entry(&anchor_entry.address()) {
+        hdk::commit_entry(&anchor_entry)?;
+        let anchor_type_address = check_parent(anchor_type)?;
+        hdk::link_entries(
+            &anchor_type_address,
+            &anchor_address,
+            ANCHOR_LINK_TYPE,
+            &anchor_text,
+        )?;
+    }
+    Ok(anchor_address)
+}
 
-let anchor = Anchor {
-    "%root",
-    ""
-};
-let anchor = Anchor {
-    "handle",
-    ""
-};
-hdk::get_links(&anchor_address, LinkMatch::Exactly("anchor"), LinkMatch::Any);
-let anchor = Anchor {
-    "handle",
-    "philtr"
-};
-let philtr_address = anchor.address();
-hdk::get_links(&philtr_address, LinkMatch::Exactly("favourites"), LinkMatch::Exactly("motorbikes"))
-*/
+/// Gives a list of all link tags from an anchor type (same as the anchor_text value)
+pub fn list_agents() -> ZomeApiResult<Vec<String>> {
+    let anchor_type = "Agents".to_string();
+    let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
+    let anchor_type_address = anchor_type_entry.address();
+    Ok(hdk::get_links(&anchor_type_address, LinkMatch::Exactly(ANCHOR_LINK_TYPE), LinkMatch::Any)?.links()
+    .iter()
+    .map(|link| link.tag.clone())
+    .collect())
+}
