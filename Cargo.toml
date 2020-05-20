@@ -10,8 +10,6 @@ license-file = "LICENSE"
 
 [dependencies]
 hdk = "=0.0.48-alpha1"
-hdk_proc_macros = "=0.0.48-alpha1"
-holochain_wasm_utils = "=0.0.48-alpha1"
 serde_derive = "1.0"
 serde_json = { version = "1.0", features = ["preserve_order"] }
 holochain_json_derive = "0.0"
