@@ -1,6 +1,6 @@
 [package]
 name = "holochain_anchors"
-version = "0.2.5"
+version = "0.2.6"
 authors = ["tomgowan", "Philip Beadle <philip.beadle@holo.host>"]
 edition = "2018"
 description = "A crate to help Holochain apps use the anchor pattern"
@@ -9,7 +9,7 @@ documentation = "https://docs.rs/holochain-anchors"
 license-file = "LICENSE"
 
 [dependencies]
-hdk = "=0.0.49-alpha1"
+hdk = "=0.0.50-alpha4"
 serde_derive = "1.0.104"
 serde_json = { version = "=1.0.47", features = ["preserve_order"] }
 holochain_json_derive = "=0.0.23"
