@@ -1,6 +1,7 @@
 # Holochain Anchors
-This create allows a Holochain project to easily use the anchors pattern for creating links.
-This is still a work in progress and feedback would be appreciated.
+NOTE: In [Holochain RSM](https://github.com/holochain/holochain) anchors is has been built into core
+
+This crate allows a [Holochain-redux](https://github.com/holochain/holochain-rust) project to easily use the anchors pattern for creating links.
 
 ## Install
 Add the following to your zomes cargo toml.
