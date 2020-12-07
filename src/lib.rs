@@ -4,11 +4,8 @@ use hdk::{
     holochain_core_types::entry::Entry,
     holochain_persistence_api::cas::content::{Address, AddressableContent},
 };
-
 use serde_derive::{Deserialize, Serialize};
-
 use hdk::prelude::*;
-
 pub mod defs;
 pub use defs::*;
 
@@ -45,7 +42,7 @@ pub fn get_anchor(address: Address) -> ZomeApiResult<Anchor> {
     hdk::utils::get_as_type(address)
 }
 
-/// Gives a list of all anchor type addresses from root anchor
+/// Gives a list of all addresses from root anchor
 pub fn list_anchor_type_addresses() -> ZomeApiResult<Vec<Address>> {
     let root_anchor_address = root_anchor()?;
     Ok(hdk::get_links(
@@ -57,7 +54,7 @@ pub fn list_anchor_type_addresses() -> ZomeApiResult<Vec<Address>> {
     .to_owned())
 }
 
-/// Gives a list of all anchor type link tags from root anchor (same as the anchor_text value)
+/// Gives a list of all link tags from root anchor (same as the anchor_text value)
 pub fn list_anchor_type_tags() -> ZomeApiResult<Vec<String>> {
     let root_anchor_address = root_anchor()?;
     Ok(hdk::get_links(&root_anchor_address, LinkMatch::Exactly(ANCHOR_LINK_TYPE), LinkMatch::Any)?.links()
@@ -66,7 +63,7 @@ pub fn list_anchor_type_tags() -> ZomeApiResult<Vec<String>> {
     .collect())
 }
 
-/// Gives a list of all anchor addresses from an anchor type
+/// Gives a list of all addresses from an anchor type
 pub fn list_anchor_addresses(anchor_type: String) -> ZomeApiResult<Vec<Address>> {
     let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
     let anchor_type_address = anchor_type_entry.address();
@@ -79,7 +76,7 @@ pub fn list_anchor_addresses(anchor_type: String) -> ZomeApiResult<Vec<Address>>
     .to_owned())
 }
 
-/// Gives a list of all anchor link tags from an anchor type (same as the anchor_text value)
+/// Gives a list of all link tags from an anchor type (same as the anchor_text value)
 pub fn list_anchor_tags(anchor_type: String) -> ZomeApiResult<Vec<String>> {
     let anchor_type_entry = Anchor::new(anchor_type.clone(), None).entry();
     let anchor_type_address = anchor_type_entry.address();
@@ -87,6 +84,15 @@ pub fn list_anchor_tags(anchor_type: String) -> ZomeApiResult<Vec<String>> {
     .iter()
     .map(|link| link.tag.clone())
     .collect())
+}
+
+pub fn link_anchors(anchor_from_type: String, anchor_from_text: String, anchor_type: String, anchor_text: String) -> ZomeApiResult<Address> {
+    hdk::link_entries(&anchor(anchor_from_type, anchor_from_text.clone())?, &anchor(anchor_type, anchor_text)?, ANCHOR_LINK_TYPE, &anchor_from_text)
+}
+
+pub fn bi_directional_link_anchors(anchor_1_type: String, anchor_1_text: String, anchor_2_type: String, anchor_2_text: String) -> ZomeApiResult<Address> {
+    hdk::link_entries(&anchor(anchor_1_type.clone(), anchor_1_text.clone())?, &anchor(anchor_2_type.clone(), anchor_2_text.clone())?, ANCHOR_LINK_TYPE, &anchor_1_text.clone())?;
+    hdk::link_entries(&anchor(anchor_2_type.clone(), anchor_2_text.clone())?, &anchor(anchor_1_type.clone(), anchor_1_text.clone())?, ANCHOR_LINK_TYPE, &anchor_2_text.clone())
 }
 
 fn check_parent(anchor_type: String) -> ZomeApiResult<Address> {
@@ -130,23 +136,3 @@ impl Anchor {
         Entry::App(ANCHOR_TYPE.into(), self.into())
     }
 }
-
-/*
-philtr -> tweets
-
-let anchor = Anchor {
-    "%root",
-    ""
-};
-let anchor = Anchor {
-    "handle",
-    ""
-};
-hdk::get_links(&anchor_address, LinkMatch::Exactly("anchor"), LinkMatch::Any);
-let anchor = Anchor {
-    "handle",
-    "philtr"
-};
-let philtr_address = anchor.address();
-hdk::get_links(&philtr_address, LinkMatch::Exactly("favourites"), LinkMatch::Exactly("motorbikes"))
-*/
